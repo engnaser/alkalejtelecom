@@ -1,422 +1,582 @@
-<!DOCTYPE html>
+
+/project-root
+  package.json
+  postcss.config.js
+  tailwind.config.js
+  index.html
+  src/
+    main.tsx
+    router.tsx
+    styles/
+      globals.css
+    layouts/
+      MainLayout.tsx
+    pages/
+      Dashboard.tsx
+      Settings.tsx
+    components/
+      Sidebar.tsx
+      Header.tsx
+      KPICard.tsx
+      LineChartCard.tsx
+      DonutChartCard.tsx
+      RecentOrdersTable.tsx
+    data.ts
+```
+
+### package.json
+```json
+{
+  "name": "admin-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 5173"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@tanstack/router": "^1.0.0",
+    "recharts": "^2.9.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.0",
+    "vite": "^7.0.0",
+    "tailwindcss": "^4.0.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@vitejs/plugin-react": "^3.1.0"
+  }
+}
+```
+
+### postcss.config.js
+```js
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+```
+
+### tailwind.config.js
+```js
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{ts,tsx}'],
+  darkMode: 'class',
+  theme: {
+    extend: {},
+    semanticTokens: {
+      colors: {
+        bg: { DEFAULT: '#0b1020' },
+        surface: { DEFAULT: '#111827' },
+        text: { DEFAULT: '#e5e7eb' },
+        muted: { DEFAULT: '#94a3b8' },
+        primary: { DEFAULT: '#4f46e5' },
+        card: { DEFAULT: '#1f2937' },
+        border: { DEFAULT: '#374151' }
+      }
+    }
+  },
+  plugins: [],
+}
+```
+
+### index.html
+```html
+<!doctype html>
 <html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق الخليج تيليكوم  | حلول تقنية متكاملة</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-        }
-        .hero-bg {
-            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-        }
-        .whatsapp-fab {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transition: transform 0.3s ease;
-        }
-        .whatsapp-fab:hover {
-            transform: scale(1.05);
-        }
-        .card-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        .security-warning {
-            border-left: 4px solid #e53e3e;
-            background-color: #fef5f5;
-        }
-    </style>
-</head>
-<body class="bg-white text-gray-800">
-    <!-- Sticky Navigation Bar -->
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-8">
-                    <a href="#home" class="text-gray-700 hover:text-blue-600 transition-colors">الرئيسية</a>
-                    <a href="#services" class="text-gray-700 hover:text-blue-600 transition-colors">خدماتنا</a>
-                    <a href="#about" class="text-gray-700 hover:text-blue-600 transition-colors">من نحن</a>
-                    <a href="#terms" class="text-gray-700 hover:text-blue-600 transition-colors">الشروط والخصوصية</a>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button id="darkModeToggle" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                        </svg>
-                    </button>
-                    <div class="flex items-center space-x-2">
-                        <div class="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center">
-                            <span class="text-white font-bold text-sm">AR</span>
-                        </div>
-                        <span class="font-semibold text-lg">ألريفي السحابية</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+  </head>
+  <body class="bg-bg text-text">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+  </html>
+```
 
-    <!-- Hero Section -->
-    <section id="home" class="hero-bg py-20 lg:py-32">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                حلول سحابية متكاملة
-                <span class="text-blue-600">لأعمالك الرقمية</span>
-            </h1>
-            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                منصة ذكية وآمنة لتحسين عملياتك التقنية مع دعم فني متكامل على مدار الساعة
-            </p>
-            <a href="https://wa.me/?text=مرحبا%20أرغب%20في%20الاستفسار%20عن%20خدماتكم" class="inline-flex items-center justify-center px-8 py-4 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-lg transition-colors pulse">
-                تواصل معنا مباشرة عبر واتساب
-                <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                </svg>
-            </a>
-        </div>
-    </section>
+### src/styles/globals.css
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-    <!-- Legal Verification Banner -->
-    <section class="py-12 bg-gray-50">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="border-r-4 border-blue-500 bg-blue-50 rounded-lg p-6 md:p-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">معلومات التوثيق الرسمية</h3>
-                        <div class="space-y-3 text-gray-600">
-                            <p><strong>الاسم التجاري:</strong> منصة ألريفي للخدمات السحابية</p>
-                            <p><strong>الاسم الإنجليزي:</strong> Alarifi Cloud Solutions</p>
-                            <p><strong>هاتف الدعم:</strong> +966 11 234 5678</p>
-                            <p><strong>البريد الإلكتروني:</strong> support@alarifi.luxaro.cloud</p>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">موقع العمليات</h3>
-                        <div class="space-y-3 text-gray-600">
-                            <p>المملكة العربية السعودية - الرياض</p>
-                            <p>الحي التجاري - برج الأعمال الدولي</p>
-                            <p>رقم السجل التجاري: 1234567890</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+/* خيارات تخصيص بسيطة للديمومة المظلمة/المضيئة */
+:root {
+  color-scheme: light dark;
+}
 
-    <!-- Services Grid -->
-    <section id="services" class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">خدماتنا الرقمية</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Service Card 1 -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover border border-gray-100">
-                    <div class="p-6">
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-2">الدعم الفني المتكامل</h3>
-                        <p class="text-gray-600">فريق متخصص متاح على مدار الساعة لحل المشكلات التقنية وضمان استمرارية العمل</p>
-                    </div>
-                </div>
+[data-theme="dark"] {
+  /* تهيئة سطحيّة إضافية إذا لزم الأمر */
+}
+```
 
-                <!-- Service Card 2 -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover border border-gray-100">
-                    <div class="p-6">
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-2">تتبع الطلبات الذكي</h3>
-                        <p class="text-gray-600">نظام متقدم لمتابعة طلباتك وتحديثات حالتك في الوقت الفعلي مع إشعارات فورية</p>
-                    </div>
-                </div>
+### src/main.tsx
+```tsx
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { RouterProvider } from '@tanstack/router';
+import { router } from './router';
+import './styles/globals.css';
 
-                <!-- Service Card 3 -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover border border-gray-100">
-                    <div class="p-6">
-                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-2">إشعارات فورية</h3>
-                        <p class="text-gray-600">تلقي تنبيهات مخصصة عبر قنوات متعددة (إيميل، SMS، تطبيق) عن أي تحديثات هامة</p>
-                    </div>
-                </div>
+const rootEl = document.getElementById('root');
+if (!rootEl) throw new Error('Root element not found');
 
-                <!-- Service Card 4 -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover border border-gray-100">
-                    <div class="p-6">
-                        <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-2">الحماية السحابية</h3>
-                        <p class="text-gray-600">حماية بياناتك بحلول تشفير متقدمة ونسخ احتياطي آلي على خوادم آمنة معزولة</p>
-                    </div>
-                </div>
+createRoot(rootEl).render(
+  <React.StrictMode>
+    <RouterProvider router={router} />
+  </React.StrictMode>
+);
+```
 
-                <!-- Service Card 5 -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover border border-gray-100">
-                    <div class="p-6">
-                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin```html
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المنصة الرقمية - حلول متكاملة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        cairo: ['Cairo', 'sans-serif'],
-                        tajawal: ['Tajawal', 'sans-serif'],
-                    },
-                    colors: {
-                        'tech-blue': '#3182ce',
-                        'tech-green': '#48bb78',
-                        'tech-slate': '#1a202c',
-                        'tech-gray': '#2d3748',
-                        'tech-light': '#f8fafc',
-                    },
-                },
-            },
-        }
-    </script>
-    <style>
-        .drop-cap:first-letter {
-            font-size: 3em;
-            font-weight: bold;
-            float: right;
-            margin-right: 0.1em;
-            line-height: 1;
-        }
-    </style>
-</head>
-<body class="font-tajawal bg-white text-tech-slate">
-    <!-- Sticky Navigation Bar -->
-    <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 shadow-sm">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-4 space-x-reverse">
-                <span class="text-2xl font-bold text-tech-blue">المنصة الرقمية</span>
-                <div class="w-10 h-10 bg-tech-blue rounded-full flex items-center justify-center text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                    </svg>
-                </div>
-            </div>
-            <nav class="flex items-center space-x-6 space-x-reverse">
-                <a href="#home" class="hover:text-tech-blue transition-colors">الرئيسية</a>
-                <a href="#services" class="hover:text-tech-blue transition-colors">خدماتنا</a>
-                <a href="#about" class="hover:text-tech-blue transition-colors">من نحن</a>
-                <a href="#privacy" class="hover:text-tech-blue transition-colors">الشروط والخصوصية</a>
-                <button id="darkModeToggle" class="p-2 rounded-full hover:bg-gray-200 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                </button>
-            </nav>
-        </div>
-    </header>
+### src/router.tsx
+```tsx
+import React from 'react';
+import { createBrowserRouter, RouterProvider } from '@tanstack/router';
+import Layout from './layouts/MainLayout';
+import Dashboard from './pages/Dashboard';
+import Settings from './pages/Settings';
 
-    <!-- Hero Section -->
-    <section id="home" class="container mx-auto px-4 py-20 text-center">
-        <h1 class="text-5xl font-bold mb-6">منصة رقمية متكاملة</h1>
-        <p class="text-xl mb-10 max-w-2xl mx-auto">حلول آمنة وفعالة متكاملة مع السحابة التقنية</p>
-        <button class="bg-tech-green text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors animate-pulse">
-            تواصل معنا مباشرة عبر واتساب
+export const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout />,
+    children: [
+      { path: '', element: <Dashboard /> },
+      { path: 'settings', element: <Settings /> },
+    ],
+  },
+]);
+```
+
+### src/layouts/MainLayout.tsx
+```tsx
+import React, { useState } from 'react';
+import { Outlet, Link } from '@tanstack/router';
+import Sidebar from '../components/Sidebar';
+import Header from '../components/Header';
+
+export default function Layout() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  return (
+    <div className="flex h-screen bg-surface text-text dark:bg-slate-900 dark:text-white">
+      <Sidebar open={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+
+      <div className="flex-1 flex flex-col">
+        <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+
+        <main className="flex-1 p-4 overflow-auto">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}
+```
+
+### src/components/Sidebar.tsx
+```tsx
+import React from 'react';
+import { Link, useMatch } from '@tanstack/router';
+
+type Props = {
+  open: boolean;
+  onToggle: () => void;
+};
+
+export default function Sidebar({ open, onToggle }: Props) {
+  const isDashboard = useMatch({ path: '/' });
+
+  return (
+    <aside
+      aria-label="الجانب التنقلي"
+      className={`flex-shrink-0 bg-card border-border border-l-2 ${
+        open ? 'w-64' : 'w-20'
+      } transition-all duration-150`}
+    >
+      <div className="flex items-center justify-between h-16 px-3 border-b border-border">
+        <span className="text-lg font-semibold" aria-label="Logo">
+          Admin
+        </span>
+        <button
+          aria-label="تبديل الشريط الجانبي"
+          onClick={onToggle}
+          className="p-1 rounded"
+        >
+          {open ? '«' : '»'}
         </button>
+      </div>
+      <nav className="mt-2">
+        <ul className="space-y-1">
+          <li>
+            <Link
+              to="/"
+              className={`flex items-center gap-3 px-3 py-2 hover:bg-slate-700 w-full ${
+                isDashboard ? 'bg-slate-700' : ''
+              }`}
+            >
+              <span>🏠</span>
+              <span className={open ? '' : 'sr-only'}>لوحة القيادة</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/settings"
+              className="flex items-center gap-3 px-3 py-2 hover:bg-slate-700 w-full"
+            >
+              <span>⚙️</span>
+              <span className={open ? '' : 'sr-only'}>الإعدادات</span>
+            </Link>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+  );
+}
+```
+
+### src/components/Header.tsx
+```tsx
+import React, { useState, useEffect, useRef } from 'react';
+
+export default function Header({ onToggleSidebar }: { onToggleSidebar: () => void }) {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  // dark mode toggle (تجريبي بسيط)
+  const [dark, setDark] = useState(false);
+  useEffect(() => {
+    const isDark = document.documentElement.classList.contains('dark');
+    setDark(isDark);
+  }, []);
+  useEffect(() => {
+    if (dark) document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+  }, [dark]);
+
+  return (
+    <header className="flex items-center justify-between h-12 px-4 border-b border-border bg-surface">
+      <button
+        aria-label="فتح/إغلاق الشريط الجانبي"
+        onClick={onToggleSidebar}
+        className="p-2 rounded hover:bg-slate-700"
+      >
+        ☰
+      </button>
+
+      <div className="flex-1 mx-4 max-w-xl">
+        <input
+          aria-label="بحث"
+          placeholder="ابحث في النظام..."
+          className="w-full rounded-md px-3 py-2 bg-slate-800 text-text placeholder-muted outline-none focus:ring-2 focus:ring-primary"
+        />
+      </div>
+
+      <div ref={menuRef} className="relative">
+        <button
+          aria-label="قائمة المستخدم"
+          onClick={() => setOpen((v) => !v)}
+          className="flex items-center gap-2 px-3 py-2 rounded-md bg-slate-800 hover:bg-slate-700"
+        >
+          <span className="w-6 h-6 rounded-full bg-blue-500" aria-label="Avatar" />
+          <span className="hidden md:inline">المشرف</span>
+        </button>
+        {open && (
+          <div className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-md shadow-lg py-1" role="menu" aria-label="قائمة المستخدم">
+            <button className="block w-full text-left px-4 py-2 hover:bg-slate-700" role="menuitem">الملف الشخصي</button>
+            <button className="block w-full text-left px-4 py-2 hover:bg-slate-700" role="menuitem">تسجيل الخروج</button>
+          </div>
+        )}
+      </div>
+
+      <button
+        aria-label="تغيير الوضع"
+        onClick={() => setDark((d) => !d)}
+        className="ml-2 p-2 rounded bg-slate-800 hover:bg-slate-700"
+      >
+        {dark ? '☀️' : '🌙'}
+      </button>
+    </header>
+  );
+}
+```
+
+### src/components/KPICard.tsx
+```tsx
+import React from 'react';
+
+type Props = {
+  title: string;
+  value: string;
+  delta?: string;
+  hint?: string;
+};
+
+export default function KPICard({ title, value, delta, hint }: Props) {
+  return (
+    <section aria-label={title} className="flex-1 bg-card border border-border rounded-md p-4 shadow-sm">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm font-medium text-muted">{title}</span>
+        {hint ? <span className="text-xs text-muted">{hint}</span> : null}
+      </div>
+      <div className="flex items-baseline gap-2">
+        <span className="text-2xl font-semibold">{value}</span>
+        {delta && <span className="text-sm text-muted">{delta}</span>}
+      </div>
     </section>
+  );
+}
+```
 
-    <!-- Legal & Verification Banner -->
-    <section class="container mx-auto px-4 py-10">
-        <div class="border-r-4 border-tech-blue bg-blue-50 p-6 rounded-lg">
-            <h2 class="text-2xl font-bold mb-4">معلومات التوثيق</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <h3 class="font-semibold">الاسم الرسمي:</h3>
-                    <p>المنصة الرقمية للتكنولوجيا المتقدمة</p>
-                    <p>Advanced Digital Technology Platform</p>
-                </div>
-                <div>
-                    <h3 class="font-semibold">الدعم الفني:</h3>
-                    <p>هاتف: +966 12 345 6789</p>
-                    <p>بريد: support@alarifi.luxaro.cloud</p>
-                </div>
-                <div>
-                    <h3 class="font-semibold">الموقع:</h3>
-                    <p>المملكة العربية السعودية</p>
-                </div>
-            </div>
-        </div>
+### src/components/LineChartCard.tsx
+```tsx
+import React from 'react';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+
+type DataPoint = { name: string; value: number };
+
+export default function LineChartCard({ data }: { data: DataPoint[] }) {
+  return (
+    <section aria-label="نمو الإيرادات" className="bg-card border border-border rounded-md p-4 h-72">
+      <div className="mb-2 font-semibold">الإيرادات على مدار الوقت</div>
+      <div className="h-52">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Line type="monotone" dataKey="value" stroke="#4f46e5" strokeWidth={3} dot={false} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </section>
+  );
+}
+```
 
-    <!-- Service Card Grid -->
-    <section id="services" class="container mx-auto px-4 py-20">
-        <h2 class="text-3xl font-bold mb-10 text-center">خدماتنا الرقمية</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Card 1 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                <div class="p-6">
-                    <div class="w-16 h-16 bg-tech-blue rounded-full flex items-center justify-center mb-4 mx-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-center">حلول تقنية متقدمة</h3>
-                    <p class="text-center">نقدم حلولًا تقنية متقدمة لتلبية احتياجاتك الرقمية مع التركيز على الأمان والفعالية.</p>
-                </div>
-            </div>
+### src/components/DonutChartCard.tsx
+```tsx
+import React from 'react';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 
-            <!-- Card 2 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                <div class="p-6">
-                    <div class="w-16 h-16 bg-tech-blue rounded-full flex items-center justify-center mb-4 mx-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-center">أمان البيانات</h3>
-                    <p class="text-center">نضمن أمان بياناتك مع أنظمة تشفير متقدمة لحماية معلوماتك الحساسة.</p>
-                </div>
-            </div>
+type Slice = { name: string; value: number; color: string };
 
-            <!-- Card 3 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                <div class="p-6">
-                    <div class="w-16 h-16 bg-tech-blue rounded-full flex items-center justify-center mb-4 mx-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-center">تتبع الأداء</h3>
-                    <p class="text-center">نقدم أدوات تتبع الأداء لمساعدتك على مراقبة أداء نظامك الرقمي.</p>
-                </div>
-            </div>
-
-            <!-- Card 4 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                <div class="p-6">
-                    <div class="w-16 h-16 bg-tech-blue rounded-full flex items-center justify-center mb-4 mx-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-center">إشعارات فورية</h3>
-                    <p class="text-center">نقدم إشعارات فورية لحماية بياناتك وتأمينها من أي تهديدات.</p>
-                </div>
-            </div>
-
-            <!-- Card 5 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                <div class="p-6">
-                    <div class="w-16 h-16 bg-tech-blue rounded-full flex items-center justify-center mb-4 mx-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-center">دعم فني متكامل</h3>
-                    <p class="text-center">نقدم دعمًا فنيًا متكاملًا لمساعدتك في حل أي مشاكل قد تواجهها.</p>
-                </div>
-            </div>
-
-            <!-- Card 6 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                <div class="p-6">
-                    <div class="w-16 h-16 bg-tech-blue rounded-full flex items-center justify-center mb-4 mx-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-center">تحديثات دورية</h3>
-                    <p class="text-center">نقدم تحديثات دورية لنظامك الرقمي لضمان عمله بسلاسة.</p>
-                </div>
-            </div>
-        </div>
+export default function DonutChartCard({ data }: { data: Slice[] }) {
+  const total = data.reduce((a, b) => a + b.value, 0);
+  return (
+    <section aria-label="التوزيع" className="bg-card border border-border rounded-md p-4 h-72">
+      <div className="mb-2 font-semibold">التوزيع القائم على النسب</div>
+      <div className="h-52">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Tooltip formatter={(value: number) => `${value} (${((value / total) * 100).toFixed(1)}%)`} />
+            <Pie data={data} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80} padAngle={3}>
+              {data.map((slice, idx) => (
+                <Cell key={idx} fill={slice.color} />
+              ))}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
     </section>
+  );
+}
+```
 
-    <!-- About Us & Security Notice Section -->
-    <section id="about" class="container mx-auto px-4 py-20">
-        <h2 class="text-3xl font-bold mb-6 text-center">من نحن</h2>
-        <div class="max-w-3xl mx-auto">
-            <p class="text-lg leading-relaxed drop-cap">
-                نحن في المنصة الرقمية للتكنولوجيا المتقدمة نلتزم بتقديم حلول تقنية متقدمة وفعالة لتلبية احتياجات عملائنا الرقمية. نحن نركز على الأمان والفعالية في جميع ما نقدمه، ونعمل على توفير بيئة آمنة وموثوقة لعملائنا.
-            </p>
-            <p class="text-lg leading-relaxed mt-4">
-                نحن نؤمن بأن التكنولوجيا يجب أن تكون سهلة الاستخدام وموثوقة، ونحن نعمل على تحقيق ذلك من خلال تقديم حلول تقنية متقدمة وفعالة.
-            </p>
-        </div>
+### src/components/RecentOrdersTable.tsx
+```tsx
+import React, { useMemo, useState } from 'react';
+import { formatCurrency } from '../utils/format';
+import type { Order } from '../types';
 
-        <div class="mt-10 bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg">
-            <h3 class="text-xl font-bold mb-2">تنبيه أمني</h3>
-            <p class="text-lg">لا تقم بمشاركة أي بيانات حساسة أو خاصة مثل كلمات المرور أو رموز التحقق أو الهوية الشخصية عبر أي قناة. نحن نضمن أمان بياناتك، ولكننا ننصحك بعدم مشاركة أي معلومات حساسة.</p>
-        </div>
+export default function RecentOrdersTable({ orders }: { orders: Order[] }) {
+  const [sortKey, setSortKey] = useState<keyof Order>('date');
+  const [reverse, setReverse] = useState(false);
+
+  const sorted = useMemo(() => {
+    const arr = [...orders];
+    arr.sort((a, b) => {
+      const va = a[sortKey];
+      const vb = b[sortKey];
+      // @ts-ignore
+      if (va < vb) return reverse ? 1 : -1;
+      // @ts-ignore
+      if (va > vb) return reverse ? -1 : 1;
+      return 0;
+    });
+    return arr;
+  }, [orders, sortKey, reverse]);
+
+  const toggle = (key: keyof Order) => {
+    if (sortKey === key) setReverse((r) => !r);
+    else {
+      setSortKey(key);
+      setReverse(false);
+    }
+  };
+
+  return (
+    <section aria-label="الطلبات الأخيرة" className="mt-6 bg-card border border-border rounded-md p-4">
+      <div className="mb-2 font-semibold">الطلبات الأخيرة</div>
+      <table className="w-full text-sm" role="table" aria-label="جدول الطلبات">
+        <thead>
+          <tr className="text-left text-muted">
+            <th className="cursor-pointer" onClick={() => toggle('id')}>معرّف الطلب</th>
+            <th className="cursor-pointer" onClick={() => toggle('customer')}>العميل</th>
+            <th className="cursor-pointer" onClick={() => toggle('amount')}>المبلغ</th>
+            <th className="cursor-pointer" onClick={() => toggle('status')}>الحالة</th>
+            <th className="cursor-pointer" onClick={() => toggle('date')}>التاريخ</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sorted.map((o) => (
+            <tr key={o.id} className="border-t border-border">
+              <td className="py-2">{o.id}</td>
+              <td>{o.customer}</td>
+              <td>{formatCurrency(o.amount)}</td>
+              <td>{o.status}</td>
+              <td>{o.date}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </section>
+  );
+}
+```
 
-    <!-- Terms of Service & Privacy Policy Footer -->
-    <footer id="privacy" class="bg-tech-slate text-white py-10">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">المنصة الرقمية</h3>
-                    <p>حلول تقنية متقدمة وفعالة لتلبية احتياجاتك الرقمية.</p>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold mb-4">روابط سريعة</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="hover:text-tech-blue transition-colors">سياسة الخصوصية</a></li>
-                        <li><a href="#" class="hover:text-tech-blue transition-colors">شروط الاستخدام</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold mb-4">تواصل معنا</h3>
-                    <p>هاتف: +966 12 345 6789</p>
-                    <p>بريد: support@alarifi.luxaro.cloud</p>
-                </div>
-            </div>
-            <div class="mt-10 pt-6 border-t border-tech-gray text-center">
-                <p>جميع الحقوق محفوظة © المنصة الرقمية 2026 - مستضاف عبر بنية تحتية سحابية ذكية</p>
-            </div>
-        </div>
-    </footer>
+### src/pages/Dashboard.tsx
+```tsx
+import React from 'react';
+import KPICard from '../components/KPICard';
+import LineChartCard from '../components/LineChartCard';
+import DonutChartCard from '../components/DonutChartCard';
+import RecentOrdersTable from '../components/RecentOrdersTable';
+import { revenueLine, donutData, orders } from '../data';
 
-    <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/?text=مرحبًا، أود الاستفسار عن خدماتكم" class="fixed bottom-8 right-8 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-    </a>
+export default function Dashboard() {
+  return (
+    <div className="space-y-4">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <KPICard title="Revenue" value="$24,320" delta="+4.2%" hint="Last 30d" />
+        <KPICard title="Users" value="1,204" delta="+1.1%" hint="Last 30d" />
+        <KPICard title="Orders" value="342" delta="-0.8%" hint="Last 7d" />
+        <KPICard title="Growth" value="12.5%" delta="+2.3%" hint="QoQ" />
+      </section>
 
-    <script>
-        // Dark mode toggle
-        const darkModeToggle = document.getElementById('darkModeToggle');
-        darkModeToggle.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-        });
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <LineChartCard data={revenueLine} />
+        <DonutChartCard data={donutData} />
+      </section>
 
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-    </script>
-</body>
-</html>
+      <RecentOrdersTable orders={orders} />
+    </div>
+  );
+}
+```
+
+### src/pages/Settings.tsx
+```tsx
+import React from 'react';
+
+export default function Settings() {
+  return (
+    <section aria-label="الإعدادات" className="bg-card border border-border rounded-md p-4">
+      <h2 className="text-lg font-semibold mb-2">الإعدادات</h2>
+      <p className="text-sm text-muted">هذه صفحة إعدادات بسيطة كتوثيق للمكوّنات المتعددة في هذا القالب.</p>
+    </section>
+  );
+}
+```
+
+### src/data.ts
+```tsx
+import type { Order } from './types';
+import type { DataPoint } from './components/LineChartCard';
+
+export const revenueLine: DataPoint[] = [
+  { name: 'Jan', value: 4000 },
+  { name: 'Feb', value: 3000 },
+  { name: 'Mar', value: 5000 },
+  { name: 'Apr', value: 3500 },
+  { name: 'May', value: 6200 },
+  { name: 'Jun', value: 7500 },
+  { name: 'Jul', value: 8000 },
+];
+
+export const donutData = [
+  { name: 'Direct', value: 40, color: '#4f46e5' },
+  { name: 'Referral', value: 25, color: '#10b981' },
+  { name: 'Social', value: 15, color: '#f59e0b' },
+  { name: 'Email', value: 20, color: '#f472b6' },
+] as const;
+
+export const orders: Order[] = [
+  { id: 'A102', customer: 'شركة ألف', amount: 250.0, status: 'Delivered', date: '2026-06-12' },
+  { id: 'A103', customer: 'شركة باء', amount: 430.5, status: 'Shipped', date: '2026-06-13' },
+  { id: 'A104', customer: 'شركة جيم', amount: 120.0, status: 'Processing', date: '2026-06-14' },
+  { id: 'A105', customer: 'شركة دال', amount: 760.2, status: 'Delivered', date: '2026-06-15' },
+  { id: 'A106', customer: 'شركة هاء', amount: 98.75, status: 'Processing', date: '2026-06-16' }
+] as Order[];
+```
+
+### src/types.ts
+```ts
+export type Order = {
+  id: string;
+  customer: string;
+  amount: number;
+  status: 'Processing' | 'Shipped' | 'Delivered';
+  date: string;
+};
+```
+
+### src/utils/format.ts
+```ts
+export function formatCurrency(n: number) {
+  return '$' + Number(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+```
+
+### كود إضافي: src/components/RecentOrdersTable.tsx استدعاء من ملف types
+اضغط هنا إذا رغبت بإعادة توجيه: استخدم "Order" من src/types.ts كما في المثال.
+
+### How to run
+
+- استخدم الأمر التالي لتثبيت الاعتماديات:
+  - npm install
+- ثم ابدأ التطوير:
+  - npm run start
+- افتح المتصفح على: http://localhost:5173
+- حالة الوضع الداكن يمكن تفعيلها عبر زر التبديل في الرأس، أو إضافة وضع dark إلى المستند إذا رغبت في تجربة وضع الظلام بشكل دائم.
+
+ملاحظات التحقق والتقنيات:
+- العناصر متجاوبة MOBILE-FIRST باستخدام Tailwind وتدعم الوضع المظلم عبر class-based dark mode.
+- المخططات: LineChartCard وDonutChartCard تستخدم Recharts كما هو مطلوب.
+- جدولة الطلبات تحتوي ميزة فرز مبسطة عبر النقر على رؤوس الأعمدة (المنطق بسيط ومباشر).
+- TanStack Router مستخدم لإنشاء مسارين: Dashboard وSettings مع Layout مركزي يضم شريط جانبي ورأس علوي. 
+- الشفرات في الشروحات بالعربية، الكود نفسه بالإنجليزية مع تعليقات بسيطة داخلية بالإنجليزية حيث يلزم.
+
+هل ترغب أن أحدد أمثلة بيانات إضافية للجدول أو أن أضيف صفحة Reports جديدة ضمن نفس نظام المسارات؟
