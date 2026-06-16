@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موقع العريفي | تصميم وتطوير مواقع احترافية</title>
+    <title>موقع الخليج تيليكوم بلاس | تصميم وتطوير مواقع احترافية</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,7 +66,7 @@
         }
 
         .logo {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 700;
             color: var(--dark);
         }
@@ -562,7 +562,7 @@
     <header class="navbar">
         <div class="container">
             <div class="logo">
-                <a href="#">العريفي<span>.</span></a>
+                <a href="#">الخليج تيليكوم بلاس<span>.</span></a>
             </div>
             <nav class="nav-links" id="navLinks">
                 <a href="#hero" class="active">الرئيسية</a>
@@ -581,14 +581,14 @@
         <div class="container hero-container">
             <div class="hero-content">
                 <h1>نبتكر حلولاً <span class="highlight">رقمية ذكية</span> لتنمية أعمالك</h1>
-                <p>نحن نساعد الشركات والأفراد على بناء حضور رقمي قوي واحترافي من خلال تصميم وتطوير مواقع إلكترونية متكاملة بأحدث التقنيات وبأعلى معايير الجودة.</p>
+                <p>نحن نساعد الشركات والأفراد على حضور رقمي قوي واحترافي من خلال تصميم وتطوير مواقع إلكترونية متكاملة بأحدث التقنيات وبأعلى معايير الجودة.</p>
                 <div class="hero-buttons">
                     <a href="#portfolio" class="btn btn-primary">مشاهدة أعمالنا</a>
                     <a href="#contact" class="btn btn-secondary">ابدأ مشروعك الآن</a>
                 </div>
             </div>
             <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&q=80" alt="Alarifi Tech">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&q=80" alt="Gulf Telecom Plus Tech">
             </div>
         </div>
     </section>
@@ -601,7 +601,7 @@
             </div>
             <div class="about-grid">
                 <div class="about-text">
-                    <h3>لماذا تختار خدمات العريفي التقنية؟</h3>
+                    <h3>لماذا تختار خدمات الخليج تيليكوم بلاس التقنية؟</h3>
                     <p>نحن لسنا مجرد مبرمجين، بل شركاء نجاح لك. نقوم بدراسة فكرتك بعناية ونحولها إلى نظام رقمي سريع، آمن، وسهل الاستخدام يضمن لك التميز في سوق العمل.</p>
                     <ul class="about-features">
                         <li><i class="fas fa-check-circle"></i> تصاميم فريدة مخصصة لهوية مشروعك.</li>
@@ -729,7 +729,7 @@
 
     <footer>
         <div class="container">
-            <p>جميع الحقوق محفوظة &copy; 2026 | تم التطوير وشق الكود بواسطة <strong>العريفي</strong></p>
+            <p>جميع الحقوق محفوظة &copy; 2026 | تم التطوير وشق الكود بواسطة <strong>الخليج تيليكوم بلاس</strong></p>
         </div>
     </footer>
 
@@ -754,43 +754,3 @@
         const links = document.querySelectorAll('.nav-links a');
         links.forEach(link => {
             link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
-            });
-        });
-
-        // 3. تأثير تحديد الرابط النشط تلقائياً عند النزول بالصفحة (Scroll Active Link)
-        window.addEventListener('scroll', () => {
-            let currentSectionId = '';
-            const sections = document.querySelectorAll('section');
-            
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                
-                // إذا كان التمرير الحالي داخل حدود القسم
-                if (pageYOffset >= (sectionTop - 200)) {
-                    currentSectionId = section.getAttribute('id');
-                }
-            });
-
-            links.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(currentSectionId)) {
-                    link.classList.add('active');
-                }
-            });
-        });
-
-        // 4. معالجة إرسال فورم التواصل وإظهار رسالة تأكيد احترافية
-        const contactForm = document.getElementById('contactForm');
-        contactForm.addEventListener('submit', (event) => {
-            event.preventDefault(); // منع الصفحة من التحديث الافتراضي
-            
-            alert('شكرًا لتواصلك معنا! تم استلام رسالتك بنجاح، وسيقوم فريق العريفي بالرد عليك في أقرب وقت ممكن.');
-            
-            contactForm.reset(); // تفريغ الخانات بعد الإرسال
-        });
-    </script>
-</body>
-</html>
