@@ -1,582 +1,796 @@
-
-/project-root
-  package.json
-  postcss.config.js
-  tailwind.config.js
-  index.html
-  src/
-    main.tsx
-    router.tsx
-    styles/
-      globals.css
-    layouts/
-      MainLayout.tsx
-    pages/
-      Dashboard.tsx
-      Settings.tsx
-    components/
-      Sidebar.tsx
-      Header.tsx
-      KPICard.tsx
-      LineChartCard.tsx
-      DonutChartCard.tsx
-      RecentOrdersTable.tsx
-    data.ts
-```
-
-### package.json
-```json
-{
-  "name": "admin-dashboard",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "start": "vite",
-    "build": "vite build",
-    "preview": "vite preview --port 5173"
-  },
-  "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "@tanstack/router": "^1.0.0",
-    "recharts": "^2.9.0"
-  },
-  "devDependencies": {
-    "typescript": "^5.2.0",
-    "vite": "^7.0.0",
-    "tailwindcss": "^4.0.0",
-    "postcss": "^8.4.0",
-    "autoprefixer": "^10.4.0",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "@vitejs/plugin-react": "^3.1.0"
-  }
-}
-```
-
-### postcss.config.js
-```js
-module.exports = {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-  },
-}
-```
-
-### tailwind.config.js
-```js
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: ['./index.html', './src/**/*.{ts,tsx}'],
-  darkMode: 'class',
-  theme: {
-    extend: {},
-    semanticTokens: {
-      colors: {
-        bg: { DEFAULT: '#0b1020' },
-        surface: { DEFAULT: '#111827' },
-        text: { DEFAULT: '#e5e7eb' },
-        muted: { DEFAULT: '#94a3b8' },
-        primary: { DEFAULT: '#4f46e5' },
-        card: { DEFAULT: '#1f2937' },
-        border: { DEFAULT: '#374151' }
-      }
-    }
-  },
-  plugins: [],
-}
-```
-
-### index.html
-```html
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard</title>
-  </head>
-  <body class="bg-bg text-text">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-  </html>
-```
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع العريفي | تصميم وتطوير مواقع احترافية</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ضبط تصفير الهوامش والخط العام */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+        }
 
-### src/styles/globals.css
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+        /* متغيرات الثيم والألوان العصرية */
+        :root {
+            --primary: #4f46e5;      /* البنفسجي النيلي الاحترافي */
+            --primary-hover: #4338ca;
+            --secondary: #0ea5e9;    /* الأزرق السماوي الذكي */
+            --dark: #0f172a;         /* كحلي غامق جداً للنصوص والعناوين */
+            --light-bg: #f8fafc;     /* خلفية فاتحة ومريحة للعين */
+            --white: #ffffff;
+            --text: #475569;         /* لون رمادي غامق للنصوص الثانوية */
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-/* خيارات تخصيص بسيطة للديمومة المظلمة/المضيئة */
-:root {
-  color-scheme: light dark;
-}
+        body {
+            background-color: var(--light-bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-[data-theme="dark"] {
-  /* تهيئة سطحيّة إضافية إذا لزم الأمر */
-}
-```
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-### src/main.tsx
-```tsx
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { RouterProvider } from '@tanstack/router';
-import { router } from './router';
-import './styles/globals.css';
+        /* التنسيق الأساسي للشريط العلوي (Navbar) */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+        }
 
-const rootEl = document.getElementById('root');
-if (!rootEl) throw new Error('Root element not found');
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-createRoot(rootEl).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
-);
-```
+        .logo {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--dark);
+        }
 
-### src/router.tsx
-```tsx
-import React from 'react';
-import { createBrowserRouter, RouterProvider } from '@tanstack/router';
-import Layout from './layouts/MainLayout';
-import Dashboard from './pages/Dashboard';
-import Settings from './pages/Settings';
+        .logo span {
+            color: var(--primary);
+        }
 
-export const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Layout />,
-    children: [
-      { path: '', element: <Dashboard /> },
-      { path: 'settings', element: <Settings /> },
-    ],
-  },
-]);
-```
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
 
-### src/layouts/MainLayout.tsx
-```tsx
-import React, { useState } from 'react';
-import { Outlet, Link } from '@tanstack/router';
-import Sidebar from '../components/Sidebar';
-import Header from '../components/Header';
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 16px;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+        }
 
-export default function Layout() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary);
+        }
 
-  return (
-    <div className="flex h-screen bg-surface text-text dark:bg-slate-900 dark:text-white">
-      <Sidebar open={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
 
-      <div className="flex-1 flex flex-col">
-        <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        .nav-links a:hover::after, .nav-links a.active::after {
+            width: 100%;
+        }
 
-        <main className="flex-1 p-4 overflow-auto">
-          <Outlet />
-        </main>
-      </div>
-    </div>
-  );
-}
-```
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            color: var(--dark);
+            cursor: pointer;
+        }
 
-### src/components/Sidebar.tsx
-```tsx
-import React from 'react';
-import { Link, useMatch } from '@tanstack/router';
+        /* الأزرار الاحترافية */
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 15px;
+        }
 
-type Props = {
-  open: boolean;
-  onToggle: () => void;
-};
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+        }
 
-export default function Sidebar({ open, onToggle }: Props) {
-  const isDashboard = useMatch({ path: '/' });
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
 
-  return (
-    <aside
-      aria-label="الجانب التنقلي"
-      className={`flex-shrink-0 bg-card border-border border-l-2 ${
-        open ? 'w-64' : 'w-20'
-      } transition-all duration-150`}
-    >
-      <div className="flex items-center justify-between h-16 px-3 border-b border-border">
-        <span className="text-lg font-semibold" aria-label="Logo">
-          Admin
-        </span>
-        <button
-          aria-label="تبديل الشريط الجانبي"
-          onClick={onToggle}
-          className="p-1 rounded"
-        >
-          {open ? '«' : '»'}
-        </button>
-      </div>
-      <nav className="mt-2">
-        <ul className="space-y-1">
-          <li>
-            <Link
-              to="/"
-              className={`flex items-center gap-3 px-3 py-2 hover:bg-slate-700 w-full ${
-                isDashboard ? 'bg-slate-700' : ''
-              }`}
-            >
-              <span>🏠</span>
-              <span className={open ? '' : 'sr-only'}>لوحة القيادة</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/settings"
-              className="flex items-center gap-3 px-3 py-2 hover:bg-slate-700 w-full"
-            >
-              <span>⚙️</span>
-              <span className={open ? '' : 'sr-only'}>الإعدادات</span>
-            </Link>
-          </li>
-        </ul>
-      </nav>
-    </aside>
-  );
-}
-```
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--dark);
+            border: 2px solid var(--dark);
+            margin-right: 15px;
+        }
 
-### src/components/Header.tsx
-```tsx
-import React, { useState, useEffect, useRef } from 'react';
+        .btn-secondary:hover {
+            background-color: var(--dark);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
 
-export default function Header({ onToggleSidebar }: { onToggleSidebar: () => void }) {
-  const [open, setOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement | null>(null);
+        .btn-block {
+            width: 100%;
+            text-align: center;
+        }
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
+        /* تصميم الواجهة الترحيبية (Hero Section) */
+        .hero-section {
+            padding: 170px 0 100px 0;
+            background: radial-gradient(circle at 10% 20%, rgba(243, 244, 246, 1) 0%, rgba(224, 231, 255, 0.3) 90%);
+        }
 
-  // dark mode toggle (تجريبي بسيط)
-  const [dark, setDark] = useState(false);
-  useEffect(() => {
-    const isDark = document.documentElement.classList.contains('dark');
-    setDark(isDark);
-  }, []);
-  useEffect(() => {
-    if (dark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-  }, [dark]);
+        .hero-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 50px;
+        }
 
-  return (
-    <header className="flex items-center justify-between h-12 px-4 border-b border-border bg-surface">
-      <button
-        aria-label="فتح/إغلاق الشريط الجانبي"
-        onClick={onToggleSidebar}
-        className="p-2 rounded hover:bg-slate-700"
-      >
-        ☰
-      </button>
+        .hero-content {
+            flex: 1;
+        }
 
-      <div className="flex-1 mx-4 max-w-xl">
-        <input
-          aria-label="بحث"
-          placeholder="ابحث في النظام..."
-          className="w-full rounded-md px-3 py-2 bg-slate-800 text-text placeholder-muted outline-none focus:ring-2 focus:ring-primary"
-        />
-      </div>
+        .hero-content h1 {
+            font-size: 46px;
+            color: var(--dark);
+            line-height: 1.3;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
 
-      <div ref={menuRef} className="relative">
-        <button
-          aria-label="قائمة المستخدم"
-          onClick={() => setOpen((v) => !v)}
-          className="flex items-center gap-2 px-3 py-2 rounded-md bg-slate-800 hover:bg-slate-700"
-        >
-          <span className="w-6 h-6 rounded-full bg-blue-500" aria-label="Avatar" />
-          <span className="hidden md:inline">المشرف</span>
-        </button>
-        {open && (
-          <div className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-md shadow-lg py-1" role="menu" aria-label="قائمة المستخدم">
-            <button className="block w-full text-left px-4 py-2 hover:bg-slate-700" role="menuitem">الملف الشخصي</button>
-            <button className="block w-full text-left px-4 py-2 hover:bg-slate-700" role="menuitem">تسجيل الخروج</button>
-          </div>
-        )}
-      </div>
+        .hero-content .highlight {
+            color: var(--primary);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-      <button
-        aria-label="تغيير الوضع"
-        onClick={() => setDark((d) => !d)}
-        className="ml-2 p-2 rounded bg-slate-800 hover:bg-slate-700"
-      >
-        {dark ? '☀️' : '🌙'}
-      </button>
+        .hero-content p {
+            font-size: 18px;
+            margin-bottom: 35px;
+            color: var(--text);
+        }
+
+        .hero-image {
+            flex: 1;
+            text-align: center;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        /* التنسيق العام لعناوين الأقسام */
+        section {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 34px;
+            color: var(--dark);
+            margin-bottom: 12px;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background-color: var(--secondary);
+            border-radius: 2px;
+        }
+
+        .section-title p {
+            font-size: 16px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* قسم من نحن (About Section) */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+
+        .about-features {
+            list-style: none;
+            margin-top: 25px;
+        }
+
+        .about-features li {
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .about-features i {
+            color: var(--secondary);
+            margin-left: 12px;
+            font-size: 20px;
+        }
+
+        .about-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            border: 1px solid #f1f5f9;
+        }
+
+        .stat-card i {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .stat-card h3 {
+            font-size: 32px;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        /* قسم الخدمات (Services Section) */
+        .services-section {
+            background-color: var(--white);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background-color: var(--light-bg);
+            padding: 40px 30px;
+            border-radius: var(--radius);
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid #f1f5f9;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            background-color: var(--white);
+            box-shadow: 0 20px 40px rgba(79, 70, 229, 0.08);
+            border-color: rgba(79, 70, 229, 0.2);
+        }
+
+        .service-icon {
+            font-size: 45px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .service-card h3 {
+            font-size: 22px;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        /* قسم معرض الأعمال (Portfolio Section) */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .portfolio-item {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            height: 250px;
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.9), rgba(79, 70, 229, 0.4));
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .portfolio-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .portfolio-item:hover .portfolio-overlay {
+            opacity: 1;
+        }
+
+        .portfolio-overlay h3 {
+            color: var(--white);
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .portfolio-overlay p {
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
+        /* قسم التواصل (Contact Section) */
+        .contact-section {
+            background-color: var(--white);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 50px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .info-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background-color: var(--light-bg);
+            padding: 20px;
+            border-radius: var(--radius);
+        }
+
+        .info-card i {
+            font-size: 26px;
+            color: var(--primary);
+        }
+
+        .info-card h4 {
+            color: var(--dark);
+            font-size: 16px;
+        }
+
+        .social-medias {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .social-medias a {
+            width: 45px;
+            height: 45px;
+            background-color: var(--light-bg);
+            color: var(--dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .social-medias a:hover {
+            background-color: var(--primary);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .contact-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            background-color: var(--light-bg);
+            border-radius: var(--radius);
+            outline: none;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .contact-form input:focus, .contact-form textarea:focus {
+            border-color: var(--primary);
+            background-color: var(--white);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        /* تذييل الصفحة (Footer) */
+        footer {
+            background-color: var(--dark);
+            color: #94a3b8;
+            text-align: center;
+            padding: 35px 0;
+            border-top: 1px solid #1e293b;
+        }
+
+        footer strong {
+            color: var(--white);
+        }
+
+        /* شاشات الهواتف والأجهزة اللوحية (Responsive Design) */
+        @media (max-width: 992px) {
+            .hero-container, .about-grid, .contact-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-image {
+                order: -1; /* لجعل الصورة تظهر فوق النص في الجوال */
+            }
+            .btn-secondary {
+                margin: 15px 0 0 0;
+            }
+            .hero-buttons {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .about-stats {
+                flex-direction: row;
+            }
+            .info-card {
+                text-align: right;
+            }
+            .social-medias {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                padding: 30px;
+                gap: 20px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+                border-top: 1px solid #f1f5f9;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .nav-links a::after {
+                display: none;
+            }
+            .hero-content h1 {
+                font-size: 32px;
+            }
+            .about-stats {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="#">العريفي<span>.</span></a>
+            </div>
+            <nav class="nav-links" id="navLinks">
+                <a href="#hero" class="active">الرئيسية</a>
+                <a href="#about">من نحن</a>
+                <a href="#services">خدماتنا</a>
+                <a href="#portfolio">أعمالنا</a>
+                <a href="#contact">اتصل بنا</a>
+            </nav>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
     </header>
-  );
-}
-```
 
-### src/components/KPICard.tsx
-```tsx
-import React from 'react';
-
-type Props = {
-  title: string;
-  value: string;
-  delta?: string;
-  hint?: string;
-};
-
-export default function KPICard({ title, value, delta, hint }: Props) {
-  return (
-    <section aria-label={title} className="flex-1 bg-card border border-border rounded-md p-4 shadow-sm">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-medium text-muted">{title}</span>
-        {hint ? <span className="text-xs text-muted">{hint}</span> : null}
-      </div>
-      <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-semibold">{value}</span>
-        {delta && <span className="text-sm text-muted">{delta}</span>}
-      </div>
+    <section id="hero" class="hero-section">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <h1>نبتكر حلولاً <span class="highlight">رقمية ذكية</span> لتنمية أعمالك</h1>
+                <p>نحن نساعد الشركات والأفراد على بناء حضور رقمي قوي واحترافي من خلال تصميم وتطوير مواقع إلكترونية متكاملة بأحدث التقنيات وبأعلى معايير الجودة.</p>
+                <div class="hero-buttons">
+                    <a href="#portfolio" class="btn btn-primary">مشاهدة أعمالنا</a>
+                    <a href="#contact" class="btn btn-secondary">ابدأ مشروعك الآن</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&q=80" alt="Alarifi Tech">
+            </div>
+        </div>
     </section>
-  );
-}
-```
 
-### src/components/LineChartCard.tsx
-```tsx
-import React from 'react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-
-type DataPoint = { name: string; value: number };
-
-export default function LineChartCard({ data }: { data: DataPoint[] }) {
-  return (
-    <section aria-label="نمو الإيرادات" className="bg-card border border-border rounded-md p-4 h-72">
-      <div className="mb-2 font-semibold">الإيرادات على مدار الوقت</div>
-      <div className="h-52">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Line type="monotone" dataKey="value" stroke="#4f46e5" strokeWidth={3} dot={false} />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>من نحن</h2>
+                <p>التميز والاحترافية في التنفيذ هو شعارنا</p>
+            </div>
+            <div class="about-grid">
+                <div class="about-text">
+                    <h3>لماذا تختار خدمات العريفي التقنية؟</h3>
+                    <p>نحن لسنا مجرد مبرمجين، بل شركاء نجاح لك. نقوم بدراسة فكرتك بعناية ونحولها إلى نظام رقمي سريع، آمن، وسهل الاستخدام يضمن لك التميز في سوق العمل.</p>
+                    <ul class="about-features">
+                        <li><i class="fas fa-check-circle"></i> تصاميم فريدة مخصصة لهوية مشروعك.</li>
+                        <li><i class="fas fa-check-circle"></i> برمجية نظيفة وسريعة الأداء (Clean Code).</li>
+                        <li><i class="fas fa-check-circle"></i> دعم فني متميز ومستمر بعد إطلاق الموقع.</li>
+                    </ul>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-laptop-code"></i>
+                        <h3>+40</h3>
+                        <p>موقعاً إلكترونياً</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <h3>+25</h3>
+                        <p>عميلاً سعيداً</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
-  );
-}
-```
 
-### src/components/DonutChartCard.tsx
-```tsx
-import React from 'react';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-
-type Slice = { name: string; value: number; color: string };
-
-export default function DonutChartCard({ data }: { data: Slice[] }) {
-  const total = data.reduce((a, b) => a + b.value, 0);
-  return (
-    <section aria-label="التوزيع" className="bg-card border border-border rounded-md p-4 h-72">
-      <div className="mb-2 font-semibold">التوزيع القائم على النسب</div>
-      <div className="h-52">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Tooltip formatter={(value: number) => `${value} (${((value / total) * 100).toFixed(1)}%)`} />
-            <Pie data={data} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80} padAngle={3}>
-              {data.map((slice, idx) => (
-                <Cell key={idx} fill={slice.color} />
-              ))}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
+    <section id="services" class="services-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>خدماتنا المميزة</h2>
+                <p>كل ما تحتاجه للانطلاق في العالم الرقمي</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-layer-group"></i></div>
+                    <h3>تصميم المتاجر والمواقع</h3>
+                    <p>واجهات عصرية متجاوبة مع كافة الشاشات تمنح زوارك تجربة تصفح رائعة ومريحة.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-code-branch"></i></div>
+                    <h3>تطوير الأنظمة الخاصة</h3>
+                    <p>برمجة لوحات تحكم مخصصة وإدارة قواعد البيانات بكفاءة عالية وحماية فائقة.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-search-dollar"></i></div>
+                    <h3>تحسين محركات البحث SEO</h3>
+                    <p>تهيئة موقعك بالكامل ليتصدر نتائج البحث الأولى في جوجل ويجلب لك المزيد من العملاء.</p>
+                </div>
+            </div>
+        </div>
     </section>
-  );
-}
-```
 
-### src/components/RecentOrdersTable.tsx
-```tsx
-import React, { useMemo, useState } from 'react';
-import { formatCurrency } from '../utils/format';
-import type { Order } from '../types';
-
-export default function RecentOrdersTable({ orders }: { orders: Order[] }) {
-  const [sortKey, setSortKey] = useState<keyof Order>('date');
-  const [reverse, setReverse] = useState(false);
-
-  const sorted = useMemo(() => {
-    const arr = [...orders];
-    arr.sort((a, b) => {
-      const va = a[sortKey];
-      const vb = b[sortKey];
-      // @ts-ignore
-      if (va < vb) return reverse ? 1 : -1;
-      // @ts-ignore
-      if (va > vb) return reverse ? -1 : 1;
-      return 0;
-    });
-    return arr;
-  }, [orders, sortKey, reverse]);
-
-  const toggle = (key: keyof Order) => {
-    if (sortKey === key) setReverse((r) => !r);
-    else {
-      setSortKey(key);
-      setReverse(false);
-    }
-  };
-
-  return (
-    <section aria-label="الطلبات الأخيرة" className="mt-6 bg-card border border-border rounded-md p-4">
-      <div className="mb-2 font-semibold">الطلبات الأخيرة</div>
-      <table className="w-full text-sm" role="table" aria-label="جدول الطلبات">
-        <thead>
-          <tr className="text-left text-muted">
-            <th className="cursor-pointer" onClick={() => toggle('id')}>معرّف الطلب</th>
-            <th className="cursor-pointer" onClick={() => toggle('customer')}>العميل</th>
-            <th className="cursor-pointer" onClick={() => toggle('amount')}>المبلغ</th>
-            <th className="cursor-pointer" onClick={() => toggle('status')}>الحالة</th>
-            <th className="cursor-pointer" onClick={() => toggle('date')}>التاريخ</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sorted.map((o) => (
-            <tr key={o.id} className="border-t border-border">
-              <td className="py-2">{o.id}</td>
-              <td>{o.customer}</td>
-              <td>{formatCurrency(o.amount)}</td>
-              <td>{o.status}</td>
-              <td>{o.date}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <section id="portfolio" class="portfolio-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>معرض أعمالنا</h2>
+                <p>نماذج من مشاريع قمنا بتنفيذها بنجاح</p>
+            </div>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=400&q=80" alt="مشروع">
+                    <div class="portfolio-overlay">
+                        <h3>منصة تعليمية ذكية</h3>
+                        <p>تصميم وتطوير بالكامل</p>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1522542550221-31fd19575a2d?auto=format&fit=crop&w=400&q=80" alt="مشروع">
+                    <div class="portfolio-overlay">
+                        <h3>متجر إلكتروني متكامل</h3>
+                        <p>برمجة خاصة وتصميم جذاب</p>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80" alt="مشروع">
+                    <div class="portfolio-overlay">
+                        <h3>موقع تعريفي لشركة</h3>
+                        <p>هوية بصرية متكاملة</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
-  );
-}
-```
 
-### src/pages/Dashboard.tsx
-```tsx
-import React from 'react';
-import KPICard from '../components/KPICard';
-import LineChartCard from '../components/LineChartCard';
-import DonutChartCard from '../components/DonutChartCard';
-import RecentOrdersTable from '../components/RecentOrdersTable';
-import { revenueLine, donutData, orders } from '../data';
-
-export default function Dashboard() {
-  return (
-    <div className="space-y-4">
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <KPICard title="Revenue" value="$24,320" delta="+4.2%" hint="Last 30d" />
-        <KPICard title="Users" value="1,204" delta="+1.1%" hint="Last 30d" />
-        <KPICard title="Orders" value="342" delta="-0.8%" hint="Last 7d" />
-        <KPICard title="Growth" value="12.5%" delta="+2.3%" hint="QoQ" />
-      </section>
-
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <LineChartCard data={revenueLine} />
-        <DonutChartCard data={donutData} />
-      </section>
-
-      <RecentOrdersTable orders={orders} />
-    </div>
-  );
-}
-```
-
-### src/pages/Settings.tsx
-```tsx
-import React from 'react';
-
-export default function Settings() {
-  return (
-    <section aria-label="الإعدادات" className="bg-card border border-border rounded-md p-4">
-      <h2 className="text-lg font-semibold mb-2">الإعدادات</h2>
-      <p className="text-sm text-muted">هذه صفحة إعدادات بسيطة كتوثيق للمكوّنات المتعددة في هذا القالب.</p>
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>تواصل معنا اليوم</h2>
+                <p>دعنا نتحدث حول مشروعك القادم ونحوله إلى واقع</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="info-card">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>البريد الإلكتروني</h4>
+                            <p>info@alarifi.cloud</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-phone-alt"></i>
+                        <div>
+                            <h4>رقم الهاتف / واتساب</h4>
+                            <p>+966 50 000 0000</p>
+                        </div>
+                    </div>
+                    <div class="social-medias">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" placeholder="الاسم الكريم" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="بريدك الإلكتروني" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="اكتب تفاصيل مشروعك أو استفسارك هنا..." rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">إرسال الطلب الآن</button>
+                </form>
+            </div>
+        </div>
     </section>
-  );
-}
-```
 
-### src/data.ts
-```tsx
-import type { Order } from './types';
-import type { DataPoint } from './components/LineChartCard';
+    <footer>
+        <div class="container">
+            <p>جميع الحقوق محفوظة &copy; 2026 | تم التطوير وشق الكود بواسطة <strong>العريفي</strong></p>
+        </div>
+    </footer>
 
-export const revenueLine: DataPoint[] = [
-  { name: 'Jan', value: 4000 },
-  { name: 'Feb', value: 3000 },
-  { name: 'Mar', value: 5000 },
-  { name: 'Apr', value: 3500 },
-  { name: 'May', value: 6200 },
-  { name: 'Jun', value: 7500 },
-  { name: 'Jul', value: 8000 },
-];
+    <script>
+        // 1. تشغيل قائمة الهاتف المحمول الجانبية (Menu Toggle)
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
 
-export const donutData = [
-  { name: 'Direct', value: 40, color: '#4f46e5' },
-  { name: 'Referral', value: 25, color: '#10b981' },
-  { name: 'Social', value: 15, color: '#f59e0b' },
-  { name: 'Email', value: 20, color: '#f472b6' },
-] as const;
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            
+            // تغيير شكل الأيقونة من قائمة (Bars) إلى إغلاق (X) عند الضغط
+            const icon = menuToggle.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.replace('fa-bars', 'fa-times');
+            } else {
+                icon.classList.replace('fa-times', 'fa-bars');
+            }
+        });
 
-export const orders: Order[] = [
-  { id: 'A102', customer: 'شركة ألف', amount: 250.0, status: 'Delivered', date: '2026-06-12' },
-  { id: 'A103', customer: 'شركة باء', amount: 430.5, status: 'Shipped', date: '2026-06-13' },
-  { id: 'A104', customer: 'شركة جيم', amount: 120.0, status: 'Processing', date: '2026-06-14' },
-  { id: 'A105', customer: 'شركة دال', amount: 760.2, status: 'Delivered', date: '2026-06-15' },
-  { id: 'A106', customer: 'شركة هاء', amount: 98.75, status: 'Processing', date: '2026-06-16' }
-] as Order[];
-```
+        // 2. إغلاق قائمة الجوال تلقائياً عند النقر على أي رابط تنقل
+        const links = document.querySelectorAll('.nav-links a');
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+            });
+        });
 
-### src/types.ts
-```ts
-export type Order = {
-  id: string;
-  customer: string;
-  amount: number;
-  status: 'Processing' | 'Shipped' | 'Delivered';
-  date: string;
-};
-```
+        // 3. تأثير تحديد الرابط النشط تلقائياً عند النزول بالصفحة (Scroll Active Link)
+        window.addEventListener('scroll', () => {
+            let currentSectionId = '';
+            const sections = document.querySelectorAll('section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                
+                // إذا كان التمرير الحالي داخل حدود القسم
+                if (pageYOffset >= (sectionTop - 200)) {
+                    currentSectionId = section.getAttribute('id');
+                }
+            });
 
-### src/utils/format.ts
-```ts
-export function formatCurrency(n: number) {
-  return '$' + Number(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-```
+            links.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(currentSectionId)) {
+                    link.classList.add('active');
+                }
+            });
+        });
 
-### كود إضافي: src/components/RecentOrdersTable.tsx استدعاء من ملف types
-اضغط هنا إذا رغبت بإعادة توجيه: استخدم "Order" من src/types.ts كما في المثال.
-
-### How to run
-
-- استخدم الأمر التالي لتثبيت الاعتماديات:
-  - npm install
-- ثم ابدأ التطوير:
-  - npm run start
-- افتح المتصفح على: http://localhost:5173
-- حالة الوضع الداكن يمكن تفعيلها عبر زر التبديل في الرأس، أو إضافة وضع dark إلى المستند إذا رغبت في تجربة وضع الظلام بشكل دائم.
-
-ملاحظات التحقق والتقنيات:
-- العناصر متجاوبة MOBILE-FIRST باستخدام Tailwind وتدعم الوضع المظلم عبر class-based dark mode.
-- المخططات: LineChartCard وDonutChartCard تستخدم Recharts كما هو مطلوب.
-- جدولة الطلبات تحتوي ميزة فرز مبسطة عبر النقر على رؤوس الأعمدة (المنطق بسيط ومباشر).
-- TanStack Router مستخدم لإنشاء مسارين: Dashboard وSettings مع Layout مركزي يضم شريط جانبي ورأس علوي. 
-- الشفرات في الشروحات بالعربية، الكود نفسه بالإنجليزية مع تعليقات بسيطة داخلية بالإنجليزية حيث يلزم.
-
-هل ترغب أن أحدد أمثلة بيانات إضافية للجدول أو أن أضيف صفحة Reports جديدة ضمن نفس نظام المسارات؟
+        // 4. معالجة إرسال فورم التواصل وإظهار رسالة تأكيد احترافية
+        const contactForm = document.getElementById('contactForm');
+        contactForm.addEventListener('submit', (event) => {
+            event.preventDefault(); // منع الصفحة من التحديث الافتراضي
+            
+            alert('شكرًا لتواصلك معنا! تم استلام رسالتك بنجاح، وسيقوم فريق العريفي بالرد عليك في أقرب وقت ممكن.');
+            
+            contactForm.reset(); // تفريغ الخانات بعد الإرسال
+        });
+    </script>
+</body>
+</html>
