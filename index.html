@@ -695,14 +695,14 @@
                         <i class="fas fa-envelope"></i>
                         <div>
                             <h4>البريد الإلكتروني</h4>
-                            <p>info@alarifi.cloud</p>
+                            <p>alkhalijtelecom2021@gmail.com</p>
                         </div>
                     </div>
                     <div class="info-card">
                         <i class="fas fa-phone-alt"></i>
                         <div>
                             <h4>رقم الهاتف / واتساب</h4>
-                            <p>+966 50 000 0000</p>
+                            <p>+967 775608601</p>
                         </div>
                     </div>
                     <div class="social-medias">
@@ -719,7 +719,7 @@
                         <input type="email" placeholder="بريدك الإلكتروني" required>
                     </div>
                     <div class="form-group">
-                        <textarea placeholder="اكتب تفاصيل مشروعك أو استفسارك هنا..." rows="5" required></textarea>
+                        <textarea placeholder="اكتب استفسارك هنا..." rows="5" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">إرسال الطلب الآن</button>
                 </form>
@@ -754,3 +754,43 @@
         const links = document.querySelectorAll('.nav-links a');
         links.forEach(link => {
             link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+            });
+        });
+
+        // 3. تأثير تحديد الرابط النشط تلقائياً عند النزول بالصفحة (Scroll Active Link)
+        window.addEventListener('scroll', () => {
+            let currentSectionId = '';
+            const sections = document.querySelectorAll('section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                
+                // إذا كان التمرير الحالي داخل حدود القسم
+                if (pageYOffset >= (sectionTop - 200)) {
+                    currentSectionId = section.getAttribute('id');
+                }
+            });
+
+            links.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(currentSectionId)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // 4. معالجة إرسال فورم التواصل وإظهار رسالة تأكيد احترافية
+        const contactForm = document.getElementById('contactForm');
+        contactForm.addEventListener('submit', (event) => {
+            event.preventDefault(); // منع الصفحة من التحديث الافتراضي
+            
+            alert('شكرًا لتواصلك معنا! تم استلام رسالتك بنجاح، وسيقوم فريق الخليج تيليكوم بلاس بالرد عليك في أقرب وقت ممكن.');
+            
+            contactForm.reset(); // تفريغ الخانات بعد الإرسال
+        });
+    </script>
+</body>
+</html>
